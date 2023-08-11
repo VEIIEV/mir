@@ -11,14 +11,18 @@ from src.questionnaire.schemas import UserQuestionnaireResponse, UserQuestionnai
 
 router = APIRouter(
     prefix="/quest",
-    tags=["questionnaire"],
+    tags=["Questionnaire"],
 )
 
 
-@router.post("/add-quest", response_model=UserQuestionnaireResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=UserQuestionnaireResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_questionnaire(
-        user_profile: UserQuestionnaireSchema,
-        session: Annotated[AsyncSession, Depends(get_async_session)],
+    user_profile: UserQuestionnaireSchema,
+    session: Annotated[AsyncSession, Depends(get_async_session)],
 ):
     stmt = (
         insert(UserQuestionnaire)
@@ -31,16 +35,22 @@ async def create_questionnaire(
 
 
 @router.get(
-    "/all-quest", response_model=list[UserQuestionnaireResponse], status_code=status.HTTP_200_OK,
+    "",
+    response_model=list[UserQuestionnaireResponse],
+    status_code=status.HTTP_200_OK,
 )
-async def get_list_questionnaire(session: Annotated[AsyncSession, Depends(get_async_session)]):
+async def get_list_questionnaire(
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+):
     query = select(UserQuestionnaire).order_by(UserQuestionnaire.city).fetch(10)
     result = await session.execute(query)
     return result.scalars().fetchall()
 
 
 @router.patch(
-    "/update/{quest_id}", response_model=UserQuestionnaireResponse, status_code=status.HTTP_200_OK,
+    "/{quest_id}",
+    response_model=UserQuestionnaireResponse,
+    status_code=status.HTTP_200_OK,
 )
 async def update_quest(
     quest_id: UUID,
@@ -61,7 +71,7 @@ async def update_quest(
 @router.delete(
     "/{quest_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-               )
+)
 async def delete_quest(
     quest_id: UUID,
     session: Annotated[AsyncSession, Depends(get_async_session)],
